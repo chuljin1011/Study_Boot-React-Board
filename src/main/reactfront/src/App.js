@@ -1,15 +1,41 @@
-import './App.css';
-import { useState } from 'react';
-
-
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const App = () => {
 
+  const [posts, setPosts] = useState([]);
+
+  useEffect(async() => {
+    // 방법 1.
+    // axios({
+    //   method:'GET',
+    //   url:'https://jsonplaceholder.typicode.com/photos'
+    // }).then(response => setPosts(response.data))
+
+    // 방법 2.
+    // axios.get('https://jsonplaceholder.typicode.com/photos')
+    //      .then(respose => setPosts(respose.data))
+
+    // 방법 3.
+
+    try {
+      const response = await axios.get('https://jsonplaceholder.typicode.com/photos');
+      setPosts(response.data);
+    } catch (error) {
+      console.log(error)
+    }    
+  })
+
   return (
-    <div>
-      
-    </div>
-  );
+    <ul>
+      {posts.map(post => (
+        <li key={post.id}>
+          <div>{post.title}</div>
+          <div><img src={post.thumbnailUrl}/></div>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 export default App;
@@ -21,9 +47,44 @@ export default App;
 
 
 
-
-
 /*
+
+- input 태그 ( 수정/완료 )
+
+const App = () => {
+
+  const [text, setText] = useState("11");
+  const [edit, setEdit] = useState(false);
+
+  let content = <div>
+    {text}
+    <button onClick={() => setEdit(true)}>수정</button>
+    </div>
+
+  if(edit) {
+    content = <div>
+    <input type="text"
+      value={text}
+      onChange={(e) => {
+        setText(e.target.value);
+        console.log(e.target.value);
+      }}
+    />
+    <button onClick={() => setEdit(false)}>수정</button>
+  </div>
+  }
+
+  return (
+    <>
+      {content}
+    </>
+  );
+}
+
+export default App;
+
+----------------------------------------------------------------------------
+
 
 - 함수 분리
 
@@ -107,7 +168,7 @@ export default App;
 
 ----------------------------------------------------------------------------
 
-- React Style 적용 방법
+- React Style 적용 방법, useState 사용 방식
 
 function App() {
 
